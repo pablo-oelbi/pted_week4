@@ -9,6 +9,7 @@ format: html
 library(readr)
 library(dplyr)
 library(lubridate)
+library(ggplot2)
 ```
 
 # Task 1: Write your own functions
@@ -67,5 +68,31 @@ threshold_distance <- 100  # Threshold distance in meters
 
 joined_data <- joined_data %>%
   mutate(meet = distance <= threshold_distance)
+```
+
+# Task 5: Visualize data
+```{r}
+# Individual dataframes for Rosa and Sabi
+rosa_data <- split_data$Rosa
+sabi_data <- split_data$Sabi
+
+# Filtered dataset with meets
+filtered_meets <- joined_data %>% filter(meet)
+
+# Plotting
+ggplot() +
+  # Scatterplot of Rosa's locations
+  geom_point(data = rosa_data, aes(x = E, y = N), color = "red", size = 1, alpha = 0.2) +
+  # Scatterplot of Sabi's locations
+  geom_point(data = sabi_data, aes(x = E, y = N), color = "blue", size = 1, alpha = 0.2) +
+  # Highlight the meets with a frame
+  geom_point(data = filtered_meets, aes(x = E.Rosa, y = N.Rosa), color = "black", size = 1, shape = 21, fill = NA, stroke = 1) +
+  geom_point(data = filtered_meets, aes(x = E.Sabi, y = N.Sabi), color = "black", size = 1, shape = 21, fill = NA, stroke = 1) +
+  # Set plot title and axis labels
+  labs(title = "Spatial Meets of Rosa and Sabi",
+       x = "Easting",
+       y = "Northing") +
+  # Adjust plot theme
+  theme_minimal()
 ```
 
