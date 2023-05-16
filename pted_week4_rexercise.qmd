@@ -46,7 +46,26 @@ wildboar_filtered <- wildboar |>
 
 # Task 3: Create Join Key
 ```{r}
-wildboar_filtered |> 
+wildboar_filtered <- wildboar_filtered|> 
   mutate(DatetimeRound = round_date(DatetimeUTC, "15 mins"))
+```
+
+# Task 4: Measuring distance at concurrent locations
+```{r}
+# 1. Split data
+split_data <- split(wildboar_filtered, wildboar_filtered$TierName)
+
+# 2. Join by Datetime
+joined_data <- inner_join(split_data[[1]], split_data[[2]], by = "DatetimeRound", suffix = c(".Rosa", ".Sabi"))
+
+# 3. Calculate Euclidean distance
+joined_data <- joined_data %>%
+  mutate(distance = sqrt((E.Rosa - E.Sabi)^2 + (N.Rosa - N.Sabi)^2))
+
+# 4. Determine meets
+threshold_distance <- 100  # Threshold distance in meters
+
+joined_data <- joined_data %>%
+  mutate(meet = distance <= threshold_distance)
 ```
 
