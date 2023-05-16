@@ -1,0 +1,33 @@
+---
+title: "PTED Week 4 R Exercises"
+format: html
+---
+
+
+```{r}
+# Load packages
+library(readr)
+library(dplyr)
+```
+
+# Task 1: Write your own functions
+```{r}
+# Import dataset
+wildboar <- read_csv("wildschwein_BE_2056.csv")
+
+# Calculate euclidean distance
+wildboar <- wildboar |> 
+  group_by(TierName) |> 
+  mutate(steplength_m = sqrt((E-lead(E))^2 + (N-lead(N))^2))
+
+# Create a function for euclidean distance calculation (that can handle vectors)
+euclidean_distance_dataset <- function(x, y) {
+  sqrt((x - lead(x))^2 + (y - lead(y))^2)
+}
+
+# Use Function to calculate the euclidean distance
+wildboar <- wildboar %>%
+  group_by(TierName) %>%
+  mutate(distance = euclidean_distance_dataset(E, N))
+```
+
