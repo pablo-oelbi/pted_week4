@@ -8,6 +8,7 @@ format: html
 # Load packages
 library(readr)
 library(dplyr)
+library(lubridate)
 ```
 
 # Task 1: Write your own functions
@@ -26,8 +27,8 @@ euclidean_distance_dataset <- function(x, y) {
 }
 
 # Use Function to calculate the euclidean distance
-wildboar <- wildboar %>%
-  group_by(TierName) %>%
+wildboar <- wildboar |> 
+  group_by(TierName) |> 
   mutate(distance = euclidean_distance_dataset(E, N))
 ```
 
@@ -37,9 +38,15 @@ wildboar <- wildboar %>%
 start_date <- "2015-04-01"
 end_date <- "2015-04-15"
 
-wildboar_filtered <- wildboar %>%
+wildboar_filtered <- wildboar |> 
   filter(TierName %in% c("Rosa", "Sabi"),
          DatetimeUTC >= as.POSIXct(start_date, tz = "UTC"),
          DatetimeUTC <= as.POSIXct(end_date, tz = "UTC"))
+```
+
+# Task 3: Create Join Key
+```{r}
+wildboar_filtered |> 
+  mutate(DatetimeRound = round_date(DatetimeUTC, "15 mins"))
 ```
 
