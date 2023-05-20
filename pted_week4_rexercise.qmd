@@ -10,6 +10,7 @@ library(readr)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
+library(plotly)
 ```
 
 # Task 1: Write your own functions
@@ -94,5 +95,28 @@ ggplot() +
        y = "Northing") +
   # Adjust plot theme
   theme_minimal()
+```
+
+# Task 6: Visualize data as timecube with
+```{r}
+# Filtered dataset for the specified time range
+filtered_data <- joined_data %>%
+  filter(DatetimeRound >= as.POSIXct("2015-04-01") & DatetimeRound <= as.POSIXct("2015-04-04"))
+
+# Create Space-Time Cube plot
+cube_plot <- plot_ly(filtered_data, z = ~DatetimeRound, x = ~E.Rosa, y = ~N.Rosa,
+                     type = "scatter3d", mode = "lines", name = "Rosa") %>%
+  add_trace(z = ~DatetimeRound, x = ~E.Sabi, y = ~N.Sabi,
+            type = "scatter3d", mode = "lines", name = "Sabi") %>%
+  add_trace(data = filtered_data %>% filter(meet), 
+              z = ~DatetimeRound, x = ~E.Sabi, y = ~N.Sabi,
+              type = "scatter3d", mode = "markers", name = "Meets") %>%
+  layout(scene = list(xaxis = list(title = "Time"), 
+                      yaxis = list(title = "Easting"), 
+                      zaxis = list(title = "Northing")),
+         title = "Space-Time Cube Visualization")
+
+# Display the Space-Time Cube plot
+cube_plot
 ```
 
