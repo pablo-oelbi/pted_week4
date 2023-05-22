@@ -155,11 +155,10 @@ posmo_day2 <- posmo |>
 # 5. Join dataframes
 posmo_joined <- inner_join(posmo_day1, posmo_day2, by = "hour_round", suffix = c(".day1", ".day2"))
 
-# 6. Calculate euclidean distance
+# 6. Calculate euclidean distance and filter spatially close locations
 posmo_joined <- posmo_joined  |> 
   mutate(distance = sqrt((X.day1 - X.day2)^2 + (Y.day1 - Y.day2)^2))
 
-# 4. Determine meets
 threshold_distance <- 100  # Threshold distance in meters
 
 posmo_joined <- posmo_joined  |> 
@@ -171,7 +170,7 @@ posmo_meets <- posmo_joined |>
 ggplot()+
   geom_point(data = posmo_day1, aes(X, Y, color = "Day 1"), size = 1, alpha = 0.2) +   
   geom_point(data = posmo_day2, aes(X, Y, color = "Day 2"), size = 1, alpha = 0.2) +
-  geom_point(data = posmo_meets, aes(x = X.day1, y = Y.day1, fill = "Day 1"), size = 1, shape = 21) +
+  geom_point(data = posmo_meets, aes(x = X.day1, y = Y.day1, fill = "Day 1"), shape = 21) +
   geom_point(data = posmo_meets, aes(x = X.day2, y = Y.day2, fill = "Day 2"), shape = 21) +
   labs(color = "Trajectory", fill = "Meets") +
   coord_equal()+
